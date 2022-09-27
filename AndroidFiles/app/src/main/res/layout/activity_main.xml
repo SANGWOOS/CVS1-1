@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal|center_vertical">
+
+        <Button
+            android:id="@+id/oneone"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:layout_margin="3dp"
+            android:text="1+1"/>
+
+        <Button
+            android:id="@+id/twoone"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:layout_margin="3dp"
+            android:text="2+1"/>
+
+        <Button
+            android:id="@+id/map"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:layout_margin="3dp"
+            android:text="주변편의점"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal|center_vertical">
+
+        <EditText
+            android:id="@+id/prod_name"
+            android:layout_width="260dp"
+            android:layout_height="50dp"
+            android:layout_margin="3dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="상품명을 검색하세요" />
+
+        <Button
+            android:id="@+id/find"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_margin="3dp"
+            android:text="검색"/>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
