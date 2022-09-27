@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
             String url = urlBuilder.build().toString();
             Request.Builder builder = new Request.Builder().url(url)
                     .addHeader("x-api-key", "YourApiKey");
+                    // Api Key를 이용해 연결
             Request req = builder.build();
 
             client.newCall(req).enqueue(new Callback() {
