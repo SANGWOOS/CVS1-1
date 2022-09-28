@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 item.name = data[i].prod_list[j].name;
                 item.price = data[i].prod_list[j].price;
                 item.tag = data[i].brand + ' ' + data[i].type;
+                item.pid = data[i].prod_list[j].pid;
                 adapter_11.setArrayData(item);
             }
         }
@@ -146,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 item.name = data[i].prod_list[j].name;
                 item.price = data[i].prod_list[j].price;
                 item.tag = data[i].brand + ' ' + data[i].type;
+                item.pid = data[i].prod_list[j].pid;
                 adapter_21.setArrayData(item);
             }
         }
@@ -190,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
                             item.name = data[i].prod_list[j].name;
                             item.price = data[i].prod_list[j].price;
                             item.tag = data[i].brand + ' ' + data[i].type;
+                            item.pid = data[i].prod_list[j].pid;
                             adapter_find.setArrayData(item);
                         }
                     }
