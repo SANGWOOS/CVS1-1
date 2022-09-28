@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         int cYear = 0;
         int cMonth = 0;
         int cDay = 0;
+        boolean isFile = true;
 
         for(int d=day ; d>=1 ; d--) {
             LocalDate tmp = LocalDate.of(year, month, d);
@@ -61,25 +63,26 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        Path file = Paths.get("/data/data/com.example.cvs11/files/res.json");
-        try {
-            FileTime creationTime = (FileTime) Files.getAttribute(file, "creationTime");
-            cTime = creationTime.toString().substring(0, 10);
-            String[] s = cTime.split("-");
-            cYear = Integer.valueOf(s[0]);
-            cMonth = Integer.valueOf(s[1]);
-            cDay = Integer.valueOf(s[2]);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if(new File("/data/data/com.example.cvs11/files/res.json").exists()) {
+            Path file = Paths.get("/data/data/com.example.cvs11/files/res.json");
+            try {
+                FileTime creationTime = (FileTime) Files.getAttribute(file, "creationTime");
+                cTime = creationTime.toString().substring(0, 10);
+                String[] s = cTime.split("-");
+                cYear = Integer.valueOf(s[0]);
+                cMonth = Integer.valueOf(s[1]);
+                cDay = Integer.valueOf(s[2]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else isFile = false;
 
-        if(365*(year - cYear) + 30*(month - cMonth) + (day - cDay) > 0 && now.getHour() >= 1) {
+        if(!isFile || (365*(year - cYear) + 30*(month - cMonth) + (day - cDay) > 0 && now.getHour() >= 1)) {
             OkHttpClient client = new OkHttpClient();
             HttpUrl.Builder urlBuilder = HttpUrl.parse("https://4x7eq8dm2f.execute-api.ap-northeast-2.amazonaws.com/getapi/").newBuilder();
             String url = urlBuilder.build().toString();
             Request.Builder builder = new Request.Builder().url(url)
-                    .addHeader("x-api-key", "YourApiKey");
-                    // Api Key를 이용해 연결
+                    .addHeader("x-api-key", "Your Api key");
             Request req = builder.build();
 
             client.newCall(req).enqueue(new Callback() {
@@ -91,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     final String myResponse = response.body().string();
+                    Gson gson = new GsonBuilder().create();
+                    data = gson.fromJson(myResponse, DataModel[].class);
 
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
@@ -99,6 +104,34 @@ public class MainActivity extends AppCompatActivity {
                                 OutputStreamWriter os = new OutputStreamWriter(openFileOutput("res.json", Context.MODE_PRIVATE));
                                 os.write(myResponse);
                                 os.close();
+
+                                for(int i=0 ; i<8 ; i+=2) {
+                                    for(int j=0 ; j<data[i].prod_list.length ; j++) {
+                                        item_info item = new item_info();
+                                        if(data[i].brand.equals("emart24"))
+                                            item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
+                                        else item.imageURL = data[i].prod_list[j].image;
+                                        item.name = data[i].prod_list[j].name;
+                                        item.price = data[i].prod_list[j].price;
+                                        item.tag = data[i].brand + ' ' + data[i].type;
+                                        //item.pid = data[i].prod_list[j].pid;
+                                        adapter_11.setArrayData(item);
+                                    }
+                                }
+
+                                for(int i=1 ; i<8 ; i+=2) {
+                                    for(int j=0 ; j<data[i].prod_list.length ; j++) {
+                                        item_info item = new item_info();
+                                        if(data[i].brand.equals("emart24"))
+                                            item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
+                                        else item.imageURL = data[i].prod_list[j].image;
+                                        item.name = data[i].prod_list[j].name;
+                                        item.price = data[i].prod_list[j].price;
+                                        item.tag = data[i].brand + ' ' + data[i].type;
+                                        //item.pid = data[i].prod_list[j].pid;
+                                        adapter_21.setArrayData(item);
+                                    }
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -106,51 +139,52 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
             });
-        }
+        } else {
+            try {
+                InputStream in = openFileInput("res.json");
+                byte[] b = new byte[in.available()];
 
-        try {
-            InputStream in = openFileInput("res.json");
-            byte[] b = new byte[in.available()];
+                in.read(b);
+                String s = new String(b);
+                Gson gson = new Gson();
+                data = gson.fromJson(s, DataModel[].class);
+                in.close();
 
-            in.read(b);
-            String s = new String(b);
-            Gson gson = new Gson();
-            data = gson.fromJson(s, DataModel[].class);
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+                for(int i=0 ; i<8 ; i+=2) {
+                    for(int j=0 ; j<data[i].prod_list.length ; j++) {
+                        item_info item = new item_info();
+                        if(data[i].brand.equals("emart24"))
+                            item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
+                        else item.imageURL = data[i].prod_list[j].image;
+                        item.name = data[i].prod_list[j].name;
+                        item.price = data[i].prod_list[j].price;
+                        item.tag = data[i].brand + ' ' + data[i].type;
+                        //item.pid = data[i].prod_list[j].pid;
+                        adapter_11.setArrayData(item);
+                    }
+                }
+
+                for(int i=1 ; i<8 ; i+=2) {
+                    for(int j=0 ; j<data[i].prod_list.length ; j++) {
+                        item_info item = new item_info();
+                        if(data[i].brand.equals("emart24"))
+                            item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
+                        else item.imageURL = data[i].prod_list[j].image;
+                        item.name = data[i].prod_list[j].name;
+                        item.price = data[i].prod_list[j].price;
+                        item.tag = data[i].brand + ' ' + data[i].type;
+                        //item.pid = data[i].prod_list[j].pid;
+                        adapter_21.setArrayData(item);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         recyclerView = (RecyclerView)findViewById(R.id.items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
 
-        for(int i=0 ; i<8 ; i+=2) {
-            for(int j=0 ; j<data[i].prod_list.length ; j++) {
-                item_info item = new item_info();
-                if(data[i].brand.equals("emart24"))
-                    item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
-                else item.imageURL = data[i].prod_list[j].image;
-                item.name = data[i].prod_list[j].name;
-                item.price = data[i].prod_list[j].price;
-                item.tag = data[i].brand + ' ' + data[i].type;
-                item.pid = data[i].prod_list[j].pid;
-                adapter_11.setArrayData(item);
-            }
-        }
-
-        for(int i=1 ; i<8 ; i+=2) {
-            for(int j=0 ; j<data[i].prod_list.length ; j++) {
-                item_info item = new item_info();
-                if(data[i].brand.equals("emart24"))
-                    item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
-                else item.imageURL = data[i].prod_list[j].image;
-                item.name = data[i].prod_list[j].name;
-                item.price = data[i].prod_list[j].price;
-                item.tag = data[i].brand + ' ' + data[i].type;
-                item.pid = data[i].prod_list[j].pid;
-                adapter_21.setArrayData(item);
-            }
-        }
 
         btn1 = (Button)findViewById(R.id.oneone);
         btn1.setOnClickListener(new View.OnClickListener() {
@@ -192,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                             item.name = data[i].prod_list[j].name;
                             item.price = data[i].prod_list[j].price;
                             item.tag = data[i].brand + ' ' + data[i].type;
-                            item.pid = data[i].prod_list[j].pid;
+                            //item.pid = data[i].prod_list[j].pid;
                             adapter_find.setArrayData(item);
                         }
                     }
