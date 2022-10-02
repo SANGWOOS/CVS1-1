@@ -1,4 +1,5 @@
 # Merged Version
+import csv
 import json
 import time
 import re
@@ -344,5 +345,25 @@ if __name__ == "__main__":
     final.append(gs_21)
     final.append(em_11)
     final.append(em_21)
+    
+    f = open('prod_list_csv.csv', 'r', encoding='cp949')
+    rdr = csv.reader(f)
+    csv_list = []
+
+    for line in rdr:
+        csv_list.append([line[0], line[1], line[2]])
+
+    for i in range(len(final)):
+        for j in range(len(final[i]['prod_list'])):
+            final[i]['prod_list'][j]['PID'] = 0
+
+    for i in range(len(final)):
+        for j in range(len(final[i]['prod_list'])):
+            for k in range(len(csv_list)):
+                if final[i]['prod_list'][j]['name'] == csv_list[k][1] and final[i]['brand'] == csv_list[k][2]:
+                    final[i]['prod_list'][j]['PID'] = csv_list[k][0]
+                    del csv_list[k]
+                    break
+    
     with open('./res.json', 'w', encoding='utf-8') as file:
         json.dump(final, file, indent='\t', ensure_ascii=False)
