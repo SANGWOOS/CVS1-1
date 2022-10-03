@@ -4,6 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,11 +14,49 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-public class Adapter extends RecyclerView.Adapter<ViewHolder> {
+public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     private ArrayList<item_info> arrayList;
 
     public Adapter() {
         arrayList = new ArrayList<>();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView imageURL;
+        public TextView tag;
+        public TextView name;
+        public TextView price;
+
+        ViewHolder(Context context, View itemView) {
+            super(itemView);
+
+            imageURL = itemView.findViewById(R.id.image);
+            tag = itemView.findViewById(R.id.tag);
+            name = itemView.findViewById(R.id.name);
+            price = itemView.findViewById(R.id.price);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION) {
+                        if(onItemClickListener != null) {
+                            onItemClickListener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int pos);
+    }
+
+    private OnItemClickListener onItemClickListener = null;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
     }
 
     @NonNull
@@ -50,5 +91,9 @@ public class Adapter extends RecyclerView.Adapter<ViewHolder> {
 
     public void setArrayData(item_info item) {
         arrayList.add(item);
+    }
+
+    public String getPID(int position) {
+        return arrayList.get(position).PID;
     }
 }
