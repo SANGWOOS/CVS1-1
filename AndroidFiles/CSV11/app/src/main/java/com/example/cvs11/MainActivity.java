@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     Adapter adapter_11 = new Adapter();
     Adapter adapter_21 = new Adapter();
     Adapter adapter_find;
+    Adapter adapter_same = new Adapter();
     RecyclerView recyclerView;
     Button btn1, btn2, btn3, btn4;
     DataModel[] data;
@@ -185,6 +186,51 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
 
+        adapter_11.setOnItemClickListener(new Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int pos) {
+                String nowPid = adapter_11.getPID(pos);
+                adapter_same= new Adapter();
+
+                for(int i=0 ; i<8 ; i++) {
+                    for(int j=0 ; j<data[i].prod_list.length ; j++) {
+                        if(data[i].prod_list[j].PID.equals(nowPid)) {
+                            item_info item = new item_info();
+                            item.imageURL = data[i].prod_list[j].image;
+                            item.name = data[i].prod_list[j].name;
+                            item.price = data[i].prod_list[j].price;
+                            item.tag = data[i].brand + ' ' + data[i].type;
+                            item.PID = data[i].prod_list[j].PID;
+                            adapter_same.setArrayData(item);
+                        }
+                    }
+                }
+                recyclerView.setAdapter(adapter_same);
+            }
+        });
+
+        adapter_21.setOnItemClickListener(new Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int pos) {
+                String nowPid = adapter_21.getPID(pos);
+                adapter_same= new Adapter();
+
+                for(int i=0 ; i<8 ; i++) {
+                    for(int j=0 ; j<data[i].prod_list.length ; j++) {
+                        if(data[i].prod_list[j].PID.equals(nowPid)) {
+                            item_info item = new item_info();
+                            item.imageURL = data[i].prod_list[j].image;
+                            item.name = data[i].prod_list[j].name;
+                            item.price = data[i].prod_list[j].price;
+                            item.tag = data[i].brand + ' ' + data[i].type;
+                            item.PID = data[i].prod_list[j].PID;
+                            adapter_same.setArrayData(item);
+                        }
+                    }
+                }
+                recyclerView.setAdapter(adapter_same);
+            }
+        });
 
         btn1 = (Button)findViewById(R.id.oneone);
         btn1.setOnClickListener(new View.OnClickListener() {
