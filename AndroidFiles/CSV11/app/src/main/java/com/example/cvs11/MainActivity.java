@@ -98,7 +98,10 @@ public class MainActivity extends AppCompatActivity {
                     final String myResponse = response.body().string();
                     Gson gson = new GsonBuilder().create();
                     data = gson.fromJson(myResponse, DataModel[].class);
-
+                    
+                    DBHelper helper;
+                    helper = new DBHelper(MainActivity.this, "FeedReader.db", null, 1);
+                    
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -131,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                                         item.price = data[i].prod_list[j].price;
                                         item.tag = data[i].brand + ' ' + data[i].type;
                                         item.PID = data[i].prod_list[j].PID;
+                                        helper.insert(data[i].prod_list[j].name,data[i].prod_list[j].price, data[i].brand + ' ' + data[i].type, data[i].prod_list[j].PID);
                                         adapter_21.setArrayData(item);
                                     }
                                 }
@@ -162,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
                         item.price = data[i].prod_list[j].price;
                         item.tag = data[i].brand + ' ' + data[i].type;
                         item.PID = data[i].prod_list[j].PID;
+                        helper.insert(data[i].prod_list[j].name,data[i].prod_list[j].price, data[i].brand + ' ' + data[i].type, data[i].prod_list[j].PID);
                         adapter_11.setArrayData(item);
                     }
                 }
