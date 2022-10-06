@@ -33,7 +33,7 @@ public class DataModel {
         String name;
         String price;
         String image;
-        String pid;
+        String PID;
 
         public String getName() {
             return name;
@@ -58,13 +58,13 @@ public class DataModel {
         public void setImage(String image) {
             this.image = image;
         }
-        
-        public String getPid() { 
-            return pid; 
+
+        public String getPID() {
+            return PID;
         }
 
-        public void setPid(String pid) { 
-            this.pid = pid; 
+        public void setPID(String PID) {
+            this.PID = PID;
         }
     }
 }
