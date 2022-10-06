@@ -5,7 +5,7 @@ public class item_info {
     String tag;
     String name;
     String price;
-    String pid;
+    String PID;
 
     public String getImageURL() {
         return imageURL;
@@ -38,12 +38,12 @@ public class item_info {
     public void setPrice(String price) {
         this.price = price;
     }
-    
-    public String getPid() {
-        return pid;
+
+    public String getPID() {
+        return PID;
     }
 
-    public void setPid(String pid) {
-        this.pid = pid;
+    public void setPID(String PID) {
+        this.PID = PID;
     }
 }
