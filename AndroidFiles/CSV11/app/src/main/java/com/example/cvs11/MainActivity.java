@@ -35,7 +35,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     Adapter adapter_11 = new Adapter();
     Adapter adapter_21 = new Adapter();
-    Adapter adapter_find;
+    Adapter adapter_find = new Adapter();
     Adapter adapter_same = new Adapter();
     RecyclerView recyclerView;
     Button btn1, btn2, btn3, btn4;
@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         int cMonth = 0;
         int cDay = 0;
         boolean isFile = true;
+
 
         for(int d=day ; d>=1 ; d--) {
             LocalDate tmp = LocalDate.of(year, month, d);
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             HttpUrl.Builder urlBuilder = HttpUrl.parse("https://4x7eq8dm2f.execute-api.ap-northeast-2.amazonaws.com/getapi/").newBuilder();
             String url = urlBuilder.build().toString();
             Request.Builder builder = new Request.Builder().url(url)
-                    .addHeader("x-api-key", "Your Api key");
+                    .addHeader("x-api-key", "Your API Key");
             Request req = builder.build();
 
             client.newCall(req).enqueue(new Callback() {
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                                         item.name = data[i].prod_list[j].name;
                                         item.price = data[i].prod_list[j].price;
                                         item.tag = data[i].brand + ' ' + data[i].type;
-                                        //item.pid = data[i].prod_list[j].pid;
+                                        item.PID = data[i].prod_list[j].PID;
                                         adapter_11.setArrayData(item);
                                     }
                                 }
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                                         item.name = data[i].prod_list[j].name;
                                         item.price = data[i].prod_list[j].price;
                                         item.tag = data[i].brand + ' ' + data[i].type;
-                                        //item.pid = data[i].prod_list[j].pid;
+                                        item.PID = data[i].prod_list[j].PID;
                                         adapter_21.setArrayData(item);
                                     }
                                 }
@@ -160,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                         item.name = data[i].prod_list[j].name;
                         item.price = data[i].prod_list[j].price;
                         item.tag = data[i].brand + ' ' + data[i].type;
-                        //item.pid = data[i].prod_list[j].pid;
+                        item.PID = data[i].prod_list[j].PID;
                         adapter_11.setArrayData(item);
                     }
                 }
@@ -174,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                         item.name = data[i].prod_list[j].name;
                         item.price = data[i].prod_list[j].price;
                         item.tag = data[i].brand + ' ' + data[i].type;
-                        //item.pid = data[i].prod_list[j].pid;
+                        item.PID = data[i].prod_list[j].PID;
                         adapter_21.setArrayData(item);
                     }
                 }
@@ -272,12 +273,35 @@ public class MainActivity extends AppCompatActivity {
                             item.name = data[i].prod_list[j].name;
                             item.price = data[i].prod_list[j].price;
                             item.tag = data[i].brand + ' ' + data[i].type;
-                            //item.pid = data[i].prod_list[j].pid;
+                            item.PID = data[i].prod_list[j].PID;
                             adapter_find.setArrayData(item);
                         }
                     }
                 }
                 recyclerView.setAdapter(adapter_find);
+
+                adapter_find.setOnItemClickListener(new Adapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int pos) {
+                        String nowPid = adapter_find.getPID(pos);
+                        adapter_same= new Adapter();
+
+                        for(int i=0 ; i<8 ; i++) {
+                            for(int j=0 ; j<data[i].prod_list.length ; j++) {
+                                if(data[i].prod_list[j].PID.equals(nowPid)) {
+                                    item_info item = new item_info();
+                                    item.imageURL = data[i].prod_list[j].image;
+                                    item.name = data[i].prod_list[j].name;
+                                    item.price = data[i].prod_list[j].price;
+                                    item.tag = data[i].brand + ' ' + data[i].type;
+                                    item.PID = data[i].prod_list[j].PID;
+                                    adapter_same.setArrayData(item);
+                                }
+                            }
+                        }
+                        recyclerView.setAdapter(adapter_same);
+                    }
+                });
             }
         });
 
