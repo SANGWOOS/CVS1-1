@@ -3,6 +3,7 @@ package com.example.cvs11;
 public class item_info {
     String imageURL;
     String tag;
+    String brand;
     String name;
     String price;
     String PID;
@@ -21,6 +22,14 @@ public class item_info {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public String getName() {
