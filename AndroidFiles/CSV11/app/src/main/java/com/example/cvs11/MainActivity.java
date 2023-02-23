@@ -33,12 +33,14 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-    Adapter adapter_11 = new Adapter();
-    Adapter adapter_21 = new Adapter();
+    Adapter adapter_CU = new Adapter();
+    Adapter adapter_SE = new Adapter();
+    Adapter adapter_GS = new Adapter();
+    Adapter adapter_EM = new Adapter();
     Adapter adapter_find = new Adapter();
     Adapter adapter_same = new Adapter();
     RecyclerView recyclerView;
-    Button btn1, btn2, btn3, btn4;
+    Button btn1, btn2, btn3, btn4, btn5;
     DataModel[] data;
 
     @Override
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             HttpUrl.Builder urlBuilder = HttpUrl.parse("https://4x7eq8dm2f.execute-api.ap-northeast-2.amazonaws.com/getapi/").newBuilder();
             String url = urlBuilder.build().toString();
             Request.Builder builder = new Request.Builder().url(url)
-                    .addHeader("x-api-key", "Your API Key");
+                    .addHeader("x-api-key", "BqwbZ2gRiu5YsR9FOmKaU53NaBdEBpY12W1BGFki");
             Request req = builder.build();
 
             client.newCall(req).enqueue(new Callback() {
@@ -98,10 +100,7 @@ public class MainActivity extends AppCompatActivity {
                     final String myResponse = response.body().string();
                     Gson gson = new GsonBuilder().create();
                     data = gson.fromJson(myResponse, DataModel[].class);
-                    
-                    DBHelper helper;
-                    helper = new DBHelper(MainActivity.this, "FeedReader.db", null, 1);
-                    
+
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -118,9 +117,13 @@ public class MainActivity extends AppCompatActivity {
                                         else item.imageURL = data[i].prod_list[j].image;
                                         item.name = data[i].prod_list[j].name;
                                         item.price = data[i].prod_list[j].price;
-                                        item.tag = data[i].brand + ' ' + data[i].type;
+                                        item.tag = data[i].type;
+                                        item.brand = data[i].brand;
                                         item.PID = data[i].prod_list[j].PID;
-                                        adapter_11.setArrayData(item);
+                                        if(data[i].brand.equals("CU")) adapter_CU.setArrayData(item);
+                                        else if(data[i].brand.equals("7/11")) adapter_SE.setArrayData(item);
+                                        else if(data[i].brand.equals("GS25")) adapter_GS.setArrayData(item);
+                                        else if(data[i].brand.equals("emart24")) adapter_EM.setArrayData(item);
                                     }
                                 }
 
@@ -132,10 +135,13 @@ public class MainActivity extends AppCompatActivity {
                                         else item.imageURL = data[i].prod_list[j].image;
                                         item.name = data[i].prod_list[j].name;
                                         item.price = data[i].prod_list[j].price;
-                                        item.tag = data[i].brand + ' ' + data[i].type;
+                                        item.tag = data[i].type;
+                                        item.brand = data[i].brand;
                                         item.PID = data[i].prod_list[j].PID;
-                                        helper.insert(data[i].prod_list[j].name,data[i].prod_list[j].price, data[i].brand + ' ' + data[i].type, data[i].prod_list[j].PID);
-                                        adapter_21.setArrayData(item);
+                                        if(data[i].brand.equals("CU")) adapter_CU.setArrayData(item);
+                                        else if(data[i].brand.equals("7/11")) adapter_SE.setArrayData(item);
+                                        else if(data[i].brand.equals("GS25")) adapter_GS.setArrayData(item);
+                                        else if(data[i].brand.equals("emart24")) adapter_EM.setArrayData(item);
                                     }
                                 }
                             } catch (IOException e) {
@@ -164,10 +170,14 @@ public class MainActivity extends AppCompatActivity {
                         else item.imageURL = data[i].prod_list[j].image;
                         item.name = data[i].prod_list[j].name;
                         item.price = data[i].prod_list[j].price;
-                        item.tag = data[i].brand + ' ' + data[i].type;
+                        item.tag = data[i].type;
+                        item.brand = data[i].brand;
                         item.PID = data[i].prod_list[j].PID;
-                        helper.insert(data[i].prod_list[j].name,data[i].prod_list[j].price, data[i].brand + ' ' + data[i].type, data[i].prod_list[j].PID);
-                        adapter_11.setArrayData(item);
+
+                        if(data[i].brand.equals("CU")) adapter_CU.setArrayData(item);
+                        else if(data[i].brand.equals("7/11")) adapter_SE.setArrayData(item);
+                        else if(data[i].brand.equals("GS25")) adapter_GS.setArrayData(item);
+                        else if(data[i].brand.equals("emart24")) adapter_EM.setArrayData(item);
                     }
                 }
 
@@ -179,9 +189,14 @@ public class MainActivity extends AppCompatActivity {
                         else item.imageURL = data[i].prod_list[j].image;
                         item.name = data[i].prod_list[j].name;
                         item.price = data[i].prod_list[j].price;
-                        item.tag = data[i].brand + ' ' + data[i].type;
+                        item.tag = data[i].type;
+                        item.brand = data[i].brand;
                         item.PID = data[i].prod_list[j].PID;
-                        adapter_21.setArrayData(item);
+
+                        if(data[i].brand.equals("CU")) adapter_CU.setArrayData(item);
+                        else if(data[i].brand.equals("7/11")) adapter_SE.setArrayData(item);
+                        else if(data[i].brand.equals("GS25")) adapter_GS.setArrayData(item);
+                        else if(data[i].brand.equals("emart24")) adapter_EM.setArrayData(item);
                     }
                 }
             } catch (IOException e) {
@@ -192,10 +207,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
 
-        adapter_11.setOnItemClickListener(new Adapter.OnItemClickListener() {
+        adapter_CU.setOnItemClickListener(new Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(int pos) {
-                String nowPid = adapter_11.getPID(pos);
+                String nowPid = adapter_CU.getPID(pos);
                 adapter_same= new Adapter();
 
                 for(int i=0 ; i<8 ; i++) {
@@ -205,7 +220,8 @@ public class MainActivity extends AppCompatActivity {
                             item.imageURL = data[i].prod_list[j].image;
                             item.name = data[i].prod_list[j].name;
                             item.price = data[i].prod_list[j].price;
-                            item.tag = data[i].brand + ' ' + data[i].type;
+                            item.tag = data[i].type;
+                            item.brand = data[i].brand;
                             item.PID = data[i].prod_list[j].PID;
                             adapter_same.setArrayData(item);
                         }
@@ -215,10 +231,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        adapter_21.setOnItemClickListener(new Adapter.OnItemClickListener() {
+        adapter_GS.setOnItemClickListener(new Adapter.OnItemClickListener() {
             @Override
             public void onItemClick(int pos) {
-                String nowPid = adapter_21.getPID(pos);
+                String nowPid = adapter_GS.getPID(pos);
                 adapter_same= new Adapter();
 
                 for(int i=0 ; i<8 ; i++) {
@@ -228,7 +244,8 @@ public class MainActivity extends AppCompatActivity {
                             item.imageURL = data[i].prod_list[j].image;
                             item.name = data[i].prod_list[j].name;
                             item.price = data[i].prod_list[j].price;
-                            item.tag = data[i].brand + ' ' + data[i].type;
+                            item.tag = data[i].type;
+                            item.brand = data[i].brand;
                             item.PID = data[i].prod_list[j].PID;
                             adapter_same.setArrayData(item);
                         }
@@ -238,33 +255,89 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btn1 = (Button)findViewById(R.id.oneone);
+        adapter_SE.setOnItemClickListener(new Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int pos) {
+                String nowPid = adapter_SE.getPID(pos);
+                adapter_same= new Adapter();
+
+                for(int i=0 ; i<8 ; i++) {
+                    for(int j=0 ; j<data[i].prod_list.length ; j++) {
+                        if(data[i].prod_list[j].PID.equals(nowPid)) {
+                            item_info item = new item_info();
+                            item.imageURL = data[i].prod_list[j].image;
+                            item.name = data[i].prod_list[j].name;
+                            item.price = data[i].prod_list[j].price;
+                            item.tag = data[i].type;
+                            item.brand = data[i].brand;
+                            item.PID = data[i].prod_list[j].PID;
+                            adapter_same.setArrayData(item);
+                        }
+                    }
+                }
+                recyclerView.setAdapter(adapter_same);
+            }
+        });
+
+        adapter_EM.setOnItemClickListener(new Adapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int pos) {
+                String nowPid = adapter_EM.getPID(pos);
+                adapter_same= new Adapter();
+
+                for(int i=0 ; i<8 ; i++) {
+                    for(int j=0 ; j<data[i].prod_list.length ; j++) {
+                        if(data[i].prod_list[j].PID.equals(nowPid)) {
+                            item_info item = new item_info();
+                            item.imageURL = data[i].prod_list[j].image;
+                            item.name = data[i].prod_list[j].name;
+                            item.price = data[i].prod_list[j].price;
+                            item.tag = data[i].type;
+                            item.brand = data[i].brand;
+                            item.PID = data[i].prod_list[j].PID;
+                            adapter_same.setArrayData(item);
+                        }
+                    }
+                }
+                recyclerView.setAdapter(adapter_same);
+            }
+        });
+
+        btn1 = (Button)findViewById(R.id.CU);
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recyclerView.setAdapter(adapter_11);
+                recyclerView.setAdapter(adapter_CU);
             }
         });
 
-        btn2 = (Button)findViewById(R.id.twoone);
+        btn2 = (Button)findViewById(R.id.GS);
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recyclerView.setAdapter(adapter_21);
+                recyclerView.setAdapter(adapter_GS);
             }
         });
 
-        btn3 = (Button)findViewById(R.id.map);
+        btn3 = (Button)findViewById(R.id.SE);
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                recyclerView.setAdapter(adapter_SE);
+            }
+        });
 
+        btn4 = (Button)findViewById(R.id.EM);
+        btn4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerView.setAdapter(adapter_EM);
             }
         });
 
         EditText find_name = (EditText)findViewById(R.id.prod_name);
-        btn4 = (Button) findViewById(R.id.find);
-        btn4.setOnClickListener(new View.OnClickListener() {
+        btn5 = (Button) findViewById(R.id.find);
+        btn5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 adapter_find = new Adapter();
@@ -277,7 +350,8 @@ public class MainActivity extends AppCompatActivity {
                             else item.imageURL = data[i].prod_list[j].image;
                             item.name = data[i].prod_list[j].name;
                             item.price = data[i].prod_list[j].price;
-                            item.tag = data[i].brand + ' ' + data[i].type;
+                            item.tag = data[i].type;
+                            item.brand = data[i].brand;
                             item.PID = data[i].prod_list[j].PID;
                             adapter_find.setArrayData(item);
                         }
@@ -298,7 +372,8 @@ public class MainActivity extends AppCompatActivity {
                                     item.imageURL = data[i].prod_list[j].image;
                                     item.name = data[i].prod_list[j].name;
                                     item.price = data[i].prod_list[j].price;
-                                    item.tag = data[i].brand + ' ' + data[i].type;
+                                    item.tag = data[i].type;
+                                    item.brand = data[i].brand;
                                     item.PID = data[i].prod_list[j].PID;
                                     adapter_same.setArrayData(item);
                                 }
