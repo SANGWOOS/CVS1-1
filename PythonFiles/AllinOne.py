@@ -4,11 +4,13 @@ import json
 import time
 import re
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.common import NoSuchElementException, StaleElementReferenceException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from threading import Thread
+from webdriver_manager.chrome import ChromeDriverManager
 
 final = []
 gs_11 = {
@@ -22,12 +24,12 @@ gs_21 = {
     "prod_list": []
 }
 se_11 = {
-    "brand": "7/11",
+    "brand": "SE",
     "type": "1+1",
     "prod_list": []
 }
 se_21 = {
-    "brand": "7/11",
+    "brand": "SE",
     "type": "2+1",
     "prod_list": []
 }
@@ -46,12 +48,7 @@ cu_11 = {
     "type": "1+1",
     "prod_list": []
 }
-cu_21_1 = {
-    "brand": "CU",
-    "type": "2+1",
-    "prod_list": []
-}
-cu_21_2 = {
+cu_21 = {
     "brand": "CU",
     "type": "2+1",
     "prod_list": []
@@ -64,7 +61,8 @@ def make_driver():
     options.add_argument('--start-maximized')
     options.add_argument('--window-size=1920,1080')
     options.add_argument("disable-gpu")
-    driver = webdriver.Chrome('chromedriver.exe', options=options)
+    service = Service(executable_path=ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=options)
     return driver
 
 
@@ -145,16 +143,11 @@ def cu_worker(tid):
         driver.execute_script('javascript:goDepth("23")')
     elif tid == 2:
         driver.execute_script('javascript:goDepth("24")')
-        end = 10
-    elif tid == 3:
-        driver.execute_script('javascript:goDepth("24")')
-        driver.execute_script('viewList(10, 0)')
-        start = 10
     else:
         print('error thread')
         driver.quit()
         return
-    time.sleep(10)
+    time.sleep(20)
 
     cnt = 0
     for i in range(start, end):
@@ -186,14 +179,7 @@ def cu_worker(tid):
                 'image': item.find_element(By.CLASS_NAME, 'prod_img').find_element(By.CLASS_NAME, 'prod_img').get_attribute('src')
             })
         elif tid == 2:
-            cu_21_1['prod_list'].append({
-                'name': item.find_element(By.CLASS_NAME, 'name').text,
-                'price': item.find_element(By.CLASS_NAME, 'price').text.replace(",", "").replace("원", "").replace("\n", ""),
-                'image': item.find_element(By.CLASS_NAME, 'prod_img').find_element(By.CLASS_NAME,
-                                                                                   'prod_img').get_attribute('src')
-            })
-        elif tid == 3:
-            cu_21_2['prod_list'].append({
+            cu_21['prod_list'].append({
                 'name': item.find_element(By.CLASS_NAME, 'name').text,
                 'price': item.find_element(By.CLASS_NAME, 'price').text.replace(",", "").replace("원", "").replace("\n", ""),
                 'image': item.find_element(By.CLASS_NAME, 'prod_img').find_element(By.CLASS_NAME,
@@ -247,24 +233,36 @@ def se_worker(tid):
 
 def em_worker(tid):
     driver = make_driver()
-    driver.get('https://emart24.co.kr/product/eventProduct.asp')
     wait = WebDriverWait(driver, timeout=100, poll_frequency=1,
                          ignored_exceptions=[NoSuchElementException, StaleElementReferenceException])
 
-    driver.execute_script("javascript:goTab('{}n1')".format(tid))
+    if tid == 1:
+        driver.get('https://emart24.co.kr/goods/event?search=&category_seq=1&align=')
+    elif tid == 2:
+        driver.get('https://emart24.co.kr/goods/event?search=&category_seq=2&align=')
+    else:
+        driver.quit()
+        return
     time.sleep(3)
+
     source = driver.page_source
-    p = re.compile('<a href="javascript:goPage\(\'([0-9]+)\'\);" class="bgNone">')
+    p = re.compile('const totalCount = \"([0-9]+)\";')
     result = p.findall(source)
-    end_page = int(result[1])
+    total_count = int(result[0])
+    end_page = 0
+
+    if total_count % 20 == 0:
+        end_page = total_count // 20
+    else:
+        end_page = 1 + total_count // 20
 
     prev = ""
     for i in range(1, end_page + 1):
         partial_res = []
         while True:
             wait.until(
-                EC.visibility_of_all_elements_located((By.XPATH, '//*[@id="regForm"]/div[2]/div[3]/div[2]/ul/li/div')))
-            items = driver.find_elements(By.XPATH, '//*[@id="regForm"]/div[2]/div[3]/div[2]/ul/li/div')
+                EC.visibility_of_all_elements_located((By.XPATH, '/html/body/div[2]/div/section[4]/div')))
+            items = driver.find_elements(By.XPATH, '/html/body/div[2]/div/section[4]/div')
             try:
                 tmp_str = items[0].text
                 if tmp_str is None:
@@ -279,28 +277,29 @@ def em_worker(tid):
             except (NoSuchElementException, StaleElementReferenceException):
                 continue
         for p in partial_res:
-            t1 = p.find_element(By.CLASS_NAME, 'productDiv').text
-            t2 = p.find_element(By.CLASS_NAME, 'price').text.replace(",", "").replace("원", "")
+            t = p.find_element(By.CLASS_NAME, 'itemTxtWrap').text.split('\n')
+            t[1] = t[1].replace(" 원", "").replace(",", "")
             url = ""
             try:
-                url = p.find_element(By.CLASS_NAME, 'productImg').find_element(By.TAG_NAME, 'img').get_attribute('src')
+                url = p.find_element(By.CLASS_NAME, 'itemImg').find_element(By.TAG_NAME, 'img').get_attribute('src')
             except NoSuchElementException:
                 url = "empty"
             if tid == 1:
                 em_11['prod_list'].append({
-                    "name": t1,
-                    "price": t2,
+                    "name": t[0],
+                    "price": t[1],
                     "image": url
                 })
             elif tid == 2:
                 em_21['prod_list'].append({
-                    "name": t1,
-                    "price": t2,
+                    "name": t[0],
+                    "price": t[1],
                     "image": url
                 })
 
         if i != end_page:
-            driver.execute_script('javascript:goPage({})'.format(i + 1))
+            go_btn = driver.find_element(By.CLASS_NAME, 'next')
+            go_btn.click()
 
     driver.quit()
     return
@@ -309,7 +308,6 @@ def em_worker(tid):
 if __name__ == "__main__":
     cth1 = Thread(target=cu_worker, args=[1])
     cth2 = Thread(target=cu_worker, args=[2])
-    cth3 = Thread(target=cu_worker, args=[3])
     sth1 = Thread(target=se_worker, args=[1])
     sth2 = Thread(target=se_worker, args=[2])
     gth1 = Thread(target=gs_worker, args=[1])
@@ -318,7 +316,6 @@ if __name__ == "__main__":
     eth2 = Thread(target=em_worker, args=[2])
     cth1.start()
     cth2.start()
-    cth3.start()
     sth1.start()
     sth2.start()
     gth1.start()
@@ -327,7 +324,6 @@ if __name__ == "__main__":
     eth2.start()
     cth1.join()
     cth2.join()
-    cth3.join()
     sth1.join()
     sth2.join()
     gth1.join()
@@ -335,18 +331,16 @@ if __name__ == "__main__":
     eth1.join()
     eth2.join()
 
-    for item in cu_21_2['prod_list']:
-        cu_21_1['prod_list'].append(item)
     final.append(cu_11)
-    final.append(cu_21_1)
+    final.append(cu_21)
     final.append(se_11)
     final.append(se_21)
     final.append(gs_11)
     final.append(gs_21)
     final.append(em_11)
     final.append(em_21)
-    
-    f = open('prod_list_csv.csv', 'r', encoding='cp949')
+
+    f = open('prod_list_csv2.csv', 'r', encoding='cp949')
     rdr = csv.reader(f)
     csv_list = []
 
@@ -355,7 +349,7 @@ if __name__ == "__main__":
 
     for i in range(len(final)):
         for j in range(len(final[i]['prod_list'])):
-            final[i]['prod_list'][j]['PID'] = 0
+            final[i]['prod_list'][j]['PID'] = "0"
 
     for i in range(len(final)):
         for j in range(len(final[i]['prod_list'])):
@@ -364,6 +358,6 @@ if __name__ == "__main__":
                     final[i]['prod_list'][j]['PID'] = csv_list[k][0]
                     del csv_list[k]
                     break
-    
+
     with open('./res.json', 'w', encoding='utf-8') as file:
         json.dump(final, file, indent='\t', ensure_ascii=False)
