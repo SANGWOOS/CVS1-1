@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                                         item.brand = data[i].brand;
                                         item.PID = data[i].prod_list[j].PID;
                                         if(data[i].brand.equals("CU")) adapter_CU.setArrayData(item);
-                                        else if(data[i].brand.equals("7/11")) adapter_SE.setArrayData(item);
+                                        else if(data[i].brand.equals("SE")) adapter_SE.setArrayData(item);
                                         else if(data[i].brand.equals("GS25")) adapter_GS.setArrayData(item);
                                         else if(data[i].brand.equals("emart24")) adapter_EM.setArrayData(item);
                                     }
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                                         item.brand = data[i].brand;
                                         item.PID = data[i].prod_list[j].PID;
                                         if(data[i].brand.equals("CU")) adapter_CU.setArrayData(item);
-                                        else if(data[i].brand.equals("7/11")) adapter_SE.setArrayData(item);
+                                        else if(data[i].brand.equals("SE")) adapter_SE.setArrayData(item);
                                         else if(data[i].brand.equals("GS25")) adapter_GS.setArrayData(item);
                                         else if(data[i].brand.equals("emart24")) adapter_EM.setArrayData(item);
                                     }
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                         item.PID = data[i].prod_list[j].PID;
 
                         if(data[i].brand.equals("CU")) adapter_CU.setArrayData(item);
-                        else if(data[i].brand.equals("7/11")) adapter_SE.setArrayData(item);
+                        else if(data[i].brand.equals("SE")) adapter_SE.setArrayData(item);
                         else if(data[i].brand.equals("GS25")) adapter_GS.setArrayData(item);
                         else if(data[i].brand.equals("emart24")) adapter_EM.setArrayData(item);
                     }
@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                         item.PID = data[i].prod_list[j].PID;
 
                         if(data[i].brand.equals("CU")) adapter_CU.setArrayData(item);
-                        else if(data[i].brand.equals("7/11")) adapter_SE.setArrayData(item);
+                        else if(data[i].brand.equals("SE")) adapter_SE.setArrayData(item);
                         else if(data[i].brand.equals("GS25")) adapter_GS.setArrayData(item);
                         else if(data[i].brand.equals("emart24")) adapter_EM.setArrayData(item);
                     }
@@ -217,7 +217,9 @@ public class MainActivity extends AppCompatActivity {
                     for(int j=0 ; j<data[i].prod_list.length ; j++) {
                         if(data[i].prod_list[j].PID.equals(nowPid)) {
                             item_info item = new item_info();
-                            item.imageURL = data[i].prod_list[j].image;
+                            if(data[i].brand.equals("emart24"))
+                                item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
+                            else item.imageURL = data[i].prod_list[j].image;
                             item.name = data[i].prod_list[j].name;
                             item.price = data[i].prod_list[j].price;
                             item.tag = data[i].type;
@@ -241,7 +243,9 @@ public class MainActivity extends AppCompatActivity {
                     for(int j=0 ; j<data[i].prod_list.length ; j++) {
                         if(data[i].prod_list[j].PID.equals(nowPid)) {
                             item_info item = new item_info();
-                            item.imageURL = data[i].prod_list[j].image;
+                            if(data[i].brand.equals("emart24"))
+                                item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
+                            else item.imageURL = data[i].prod_list[j].image;
                             item.name = data[i].prod_list[j].name;
                             item.price = data[i].prod_list[j].price;
                             item.tag = data[i].type;
@@ -265,7 +269,9 @@ public class MainActivity extends AppCompatActivity {
                     for(int j=0 ; j<data[i].prod_list.length ; j++) {
                         if(data[i].prod_list[j].PID.equals(nowPid)) {
                             item_info item = new item_info();
-                            item.imageURL = data[i].prod_list[j].image;
+                            if(data[i].brand.equals("emart24"))
+                                item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
+                            else item.imageURL = data[i].prod_list[j].image;
                             item.name = data[i].prod_list[j].name;
                             item.price = data[i].prod_list[j].price;
                             item.tag = data[i].type;
@@ -289,7 +295,9 @@ public class MainActivity extends AppCompatActivity {
                     for(int j=0 ; j<data[i].prod_list.length ; j++) {
                         if(data[i].prod_list[j].PID.equals(nowPid)) {
                             item_info item = new item_info();
-                            item.imageURL = data[i].prod_list[j].image;
+                            if(data[i].brand.equals("emart24"))
+                                item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
+                            else item.imageURL = data[i].prod_list[j].image;
                             item.name = data[i].prod_list[j].name;
                             item.price = data[i].prod_list[j].price;
                             item.tag = data[i].type;
@@ -369,7 +377,9 @@ public class MainActivity extends AppCompatActivity {
                             for(int j=0 ; j<data[i].prod_list.length ; j++) {
                                 if(data[i].prod_list[j].PID.equals(nowPid)) {
                                     item_info item = new item_info();
-                                    item.imageURL = data[i].prod_list[j].image;
+                                    if(data[i].brand.equals("emart24"))
+                                        item.imageURL = data[i].prod_list[j].image.substring(0, 4) + data[i].prod_list[j].image.substring(5);
+                                    else item.imageURL = data[i].prod_list[j].image;
                                     item.name = data[i].prod_list[j].name;
                                     item.price = data[i].prod_list[j].price;
                                     item.tag = data[i].type;
