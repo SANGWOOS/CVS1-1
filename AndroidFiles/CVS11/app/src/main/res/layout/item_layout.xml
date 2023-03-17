@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="75dp"
+    android:orientation="horizontal"
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="75dp"
+        android:layout_height="75dp"/>
+
+    <LinearLayout
+        android:id="@+id/itemLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:id="@+id/innerLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1+1"
+                android:layout_marginRight="2dp"
+                android:background="#9a05f7"
+                android:textColor="#ffffff"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/brand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CU"
+                android:textStyle="bold"
+                android:layout_marginLeft="5dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="펩시제로500ml"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1000"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+</LinearLayout>
