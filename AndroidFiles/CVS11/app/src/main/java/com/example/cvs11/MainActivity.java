@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             HttpUrl.Builder urlBuilder = HttpUrl.parse("https://4x7eq8dm2f.execute-api.ap-northeast-2.amazonaws.com/getapi/").newBuilder();
             String url = urlBuilder.build().toString();
             Request.Builder builder = new Request.Builder().url(url)
-                    .addHeader("x-api-key", "BqwbZ2gRiu5YsR9FOmKaU53NaBdEBpY12W1BGFki");
+                    .addHeader("x-api-key", "Your api key");
             Request req = builder.build();
 
             client.newCall(req).enqueue(new Callback() {
